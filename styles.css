@@ -1,0 +1,49 @@
+/* Eye Tracking Text Magnifier Styles */
+
+.eye-tracking-magnified {
+  /* Will be dynamically set by JavaScript */
+  position: relative;
+  z-index: 10;
+}
+
+/* Smooth scroll behavior for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout shift during magnification */
+.eye-tracking-container {
+  display: inline-block;
+}
+
+/* Optional: Highlight effect */
+.eye-tracking-magnified::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: rgba(100, 150, 255, 0.1);
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Accessibility: Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .eye-tracking-magnified {
+    transition: none !important;
+  }
+  
+  #eye-tracking-cursor {
+    transition: none !important;
+  }
+}

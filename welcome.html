@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Eye Tracking Magnifier</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 60px;
+    }
+    
+    .header h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .header .emoji {
+      font-size: 64px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .header p {
+      font-size: 20px;
+      opacity: 0.9;
+    }
+    
+    .content {
+      background: white;
+      border-radius: 16px;
+      padding: 48px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .section {
+      margin-bottom: 48px;
+    }
+    
+    .section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .section h2 {
+      font-size: 28px;
+      color: #667eea;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-icon {
+      font-size: 32px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    
+    .feature-card {
+      background: #f8f9fa;
+      padding: 24px;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .feature-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .feature-card p {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .steps {
+      counter-reset: step-counter;
+      list-style: none;
+      padding: 0;
+    }
+    
+    .steps li {
+      counter-increment: step-counter;
+      margin-bottom: 24px;
+      padding-left: 60px;
+      position: relative;
+    }
+    
+    .steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .steps li strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .steps li p {
+      color: #666;
+      font-size: 15px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: #f8f9fa;
+      color: #333;
+      border: 2px solid #ddd;
+    }
+    
+    .highlight-box {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 24px;
+    }
+    
+    .highlight-box h3 {
+      color: #856404;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+    
+    .highlight-box p {
+      color: #856404;
+      font-size: 14px;
+    }
+    
+    .demo-video {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .privacy-note {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 24px;
+    }
+    
+    .privacy-note h3 {
+      color: #2e7d32;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    
+    .privacy-note ul {
+      margin-left: 20px;
+      color: #2e7d32;
+    }
+    
+    .privacy-note li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="emoji">👁️</span>
+      <h1>Welcome to Eye Tracking Magnifier!</h1>
+      <p>Your reading experience just got better</p>
+    </div>
+    
+    <div class="content">
+      <div class="section">
+        <h2>
+          <span class="section-icon">✨</span>
+          What Is This?
+        </h2>
+        <p>
+          Eye Tracking Magnifier is an intelligent browser extension that automatically enlarges text as you read, 
+          making web browsing more comfortable and accessible. Whether you're reading articles, PDFs, or any web content, 
+          the extension adapts to where you're looking for a seamless reading experience.
+        </p>
+      </div>
+      
+      <div class="section">
+        <h2>
+          <span class="section-icon">🚀</span>
+          Key Features
+        </h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3>👁️ Smart Eye Tracking</h3>
+            <p>Uses advanced algorithms to detect where you're looking and magnifies text automatically.</p>
+          </div>
+          <div class="feature-card">
+            <h3>🖱️ Mouse Fallback</h3>
+            <p>Works seamlessly with mouse movement if eye tracking isn't available.</p>
+          </div>
+          <div class="feature-card">
+            <h3>⚡ Battery Efficient</h3>
+            <p>Intelligent power management ensures minimal battery drain on your device.</p>
+          </div>
+          <div class="feature-card">
+            <h3>🎨 Customizable</h3>
+            <p>Adjust magnification level, speed, and sensitivity to your preferences.</p>
+          </div>
+          <div class="feature-card">
+            <h3>📄 PDF Support</h3>
+            <p>Works on PDFs, web pages, and all online content seamlessly.</p>
+          </div>
+          <div class="feature-card">
+            <h3>🌐 Universal</h3>
+            <p>Compatible with all Chromium-based browsers (Chrome, Edge, Brave, Opera).</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>
+          <span class="section-icon">📖</span>
+          How to Get Started
+        </h2>
+        <ol class="steps">
+          <li>
+            <strong>Enable the Extension</strong>
+            <p>Click the extension icon in your browser toolbar and toggle it on. You can pin it for easy access.</p>
+          </li>
+          <li>
+            <strong>Choose Your Mode</strong>
+            <p>Start with mouse tracking (works immediately) or calibrate eye tracking for hands-free reading.</p>
+          </li>
+          <li>
+            <strong>Customize Settings</strong>
+            <p>Adjust magnification level (1.1x-3.0x), transition speed, and sensitivity to your liking.</p>
+          </li>
+          <li>
+            <strong>Start Reading</strong>
+            <p>Browse any website, and text will automatically enlarge as you focus on it!</p>
+          </li>
+        </ol>
+        
+        <div class="highlight-box">
+          <h3>💡 Pro Tip</h3>
+          <p>
+            Start with the default settings (1.5x magnification, 200ms speed). Once you're comfortable, 
+            experiment with different levels to find what works best for you!
+          </p>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>
+          <span class="section-icon">🔒</span>
+          Privacy & Security
+        </h2>
+        <div class="privacy-note">
+          <h3>Your Privacy Matters</h3>
+          <ul>
+            <li>✅ All processing happens locally on your device</li>
+            <li>✅ No data is sent to external servers</li>
+            <li>✅ Camera access is optional (only for eye tracking)</li>
+            <li>✅ No user tracking or analytics</li>
+            <li>✅ Settings stored locally in your browser only</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h2>
+          <span class="section-icon">🎯</span>
+          Eye Tracking Calibration
+        </h2>
+        <p>
+          For the most accurate experience, we recommend calibrating the eye tracking feature. 
+          This one-time setup helps the extension understand your unique eye movement patterns.
+        </p>
+        <p style="margin-top: 12px;">
+          <strong>Requirements:</strong>
+        </p>
+        <ul style="margin-left: 24px; margin-top: 8px; color: #666;">
+          <li>A webcam or built-in camera</li>
+          <li>Good lighting conditions</li>
+          <li>2-3 minutes for calibration</li>
+          <li>Ability to keep your head relatively still</li>
+        </ul>
+      </div>
+      
+      <div class="cta-buttons">
+        <button class="btn btn-primary" id="calibrateBtn">🎯 Calibrate Eye Tracking</button>
+        <button class="btn btn-secondary" id="settingsBtn">⚙️ Open Settings</button>
+      </div>
+      
+      <div class="highlight-box" style="margin-top: 40px;">
+        <h3>Need Help?</h3>
+        <p>
+          Click the extension icon anytime to access settings, or check the README for detailed documentation. 
+          You can also provide feedback using the thumbs down button if something isn't working right.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('calibrateBtn').addEventListener('click', () => {
+      chrome.tabs.create({
+        url: chrome.runtime.getURL('calibration.html')
+      });
+    });
+    
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      chrome.runtime.openOptionsPage();
+    });
+  </script>
+</body>
+</html>

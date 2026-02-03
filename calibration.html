@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eye Tracking Calibration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .container {
+      text-align: center;
+      max-width: 600px;
+      padding: 40px;
+    }
+    
+    h1 {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+    
+    .instructions {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+    
+    .instructions h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .instructions ol {
+      padding-left: 24px;
+      line-height: 1.8;
+    }
+    
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    .calibration-point {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.3s;
+      opacity: 0;
+    }
+    
+    .calibration-point.active {
+      opacity: 1;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .calibration-point:hover {
+      transform: scale(1.2);
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+      }
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    
+    button {
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #4CAF50;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .status-message {
+      font-size: 18px;
+      margin-bottom: 24px;
+      min-height: 28px;
+    }
+    
+    .video-preview {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 200px;
+      height: 150px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+    
+    .video-preview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    #calibrationContainer {
+      display: none;
+    }
+    
+    #calibrationContainer.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="introContainer">
+    <h1>🎯 Eye Tracking Calibration</h1>
+    <p class="subtitle">Let's calibrate your eye tracking for the best experience</p>
+    
+    <div class="instructions">
+      <h2>Instructions:</h2>
+      <ol>
+        <li>Make sure you're in a well-lit environment</li>
+        <li>Position yourself comfortably in front of your screen</li>
+        <li>Keep your head relatively still during calibration</li>
+        <li>Click on each point as it appears</li>
+        <li>Try to look directly at each point before clicking</li>
+      </ol>
+    </div>
+    
+    <div class="buttons">
+      <button class="btn-primary" id="startBtn">Start Calibration</button>
+      <button class="btn-secondary" id="skipBtn">Skip (Use Mouse Tracking)</button>
+    </div>
+  </div>
+  
+  <div id="calibrationContainer">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="status-message" id="statusMessage">Click the point when it appears</div>
+  </div>
+  
+  <div class="video-preview" id="videoPreview">
+    <video id="webgazerVideo" autoplay playsinline></video>
+  </div>
+  
+  <script>
+    const introContainer = document.getElementById('introContainer');
+    const calibrationContainer = document.getElementById('calibrationContainer');
+    const startBtn = document.getElementById('startBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const progressFill = document.getElementById('progressFill');
+    const statusMessage = document.getElementById('statusMessage');
+    const videoPreview = document.getElementById('videoPreview');
+    
+    let calibrationPoints = [];
+    let currentPointIndex = 0;
+    const totalPoints = 9;
+    
+    startBtn.addEventListener('click', startCalibration);
+    skipBtn.addEventListener('click', () => {
+      chrome.storage.sync.set({ useEyeTracking: false });
+      window.close();
+    });
+    
+    function startCalibration() {
+      introContainer.style.display = 'none';
+      calibrationContainer.classList.add('active');
+      videoPreview.style.display = 'block';
+      
+      // Request camera permission and initialize
+      initializeCalibration();
+    }
+    
+    async function initializeCalibration() {
+      try {
+        // Request camera permission
+        await navigator.mediaDevices.getUserMedia({ video: true });
+        
+        statusMessage.textContent = 'Initializing camera...';
+        
+        // Create calibration points
+        createCalibrationPoints();
+        
+        // Show first point after a delay
+        setTimeout(() => {
+          showNextPoint();
+        }, 2000);
+        
+      } catch (error) {
+        statusMessage.textContent = 'Camera access denied. Using mouse tracking instead.';
+        console.error('Camera error:', error);
+        
+        setTimeout(() => {
+          chrome.storage.sync.set({ useEyeTracking: false });
+          window.close();
+        }, 2000);
+      }
+    }
+    
+    function createCalibrationPoints() {
+      const positions = [
+        { x: 10, y: 10 },    // Top-left
+        { x: 50, y: 10 },    // Top-center
+        { x: 90, y: 10 },    // Top-right
+        { x: 10, y: 50 },    // Middle-left
+        { x: 50, y: 50 },    // Center
+        { x: 90, y: 50 },    // Middle-right
+        { x: 10, y: 90 },    // Bottom-left
+        { x: 50, y: 90 },    // Bottom-center
+        { x: 90, y: 90 }     // Bottom-right
+      ];
+      
+      positions.forEach((pos, index) => {
+        const point = document.createElement('div');
+        point.className = 'calibration-point';
+        point.style.left = `${pos.x}%`;
+        point.style.top = `${pos.y}%`;
+        point.dataset.index = index;
+        
+        point.addEventListener('click', () => {
+          handlePointClick(index);
+        });
+        
+        document.body.appendChild(point);
+        calibrationPoints.push(point);
+      });
+    }
+    
+    function showNextPoint() {
+      if (currentPointIndex >= totalPoints) {
+        completeCalibration();
+        return;
+      }
+      
+      // Hide all points
+      calibrationPoints.forEach(point => {
+        point.classList.remove('active');
+      });
+      
+      // Show current point
+      calibrationPoints[currentPointIndex].classList.add('active');
+      
+      statusMessage.textContent = `Point ${currentPointIndex + 1} of ${totalPoints}`;
+      updateProgress();
+    }
+    
+    function handlePointClick(index) {
+      if (index === currentPointIndex) {
+        // Correct point clicked
+        calibrationPoints[index].style.opacity = '0';
+        
+        currentPointIndex++;
+        
+        setTimeout(() => {
+          showNextPoint();
+        }, 300);
+      }
+    }
+    
+    function updateProgress() {
+      const progress = (currentPointIndex / totalPoints) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+    
+    function completeCalibration() {
+      statusMessage.textContent = '✓ Calibration complete!';
+      progressFill.style.width = '100%';
+      
+      // Save settings
+      chrome.storage.sync.set({ 
+        useEyeTracking: true,
+        calibrationComplete: true
+      });
+      
+      // Close after a delay
+      setTimeout(() => {
+        window.close();
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
