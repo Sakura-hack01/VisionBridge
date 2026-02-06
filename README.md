@@ -24,7 +24,7 @@ A highly optimized browser extension that magnifies text based on your eye movem
    - **Opera**: `opera://extensions/`
 3. Enable "Developer mode" (toggle in top-right corner)
 4. Click "Load unpacked"
-5. Select the `eye-tracking-magnifier` folder
+5. Select the `VisionBridge` folder
 6. The extension is now installed!
 
 ### Method 2: Create Package (For Distribution)
@@ -91,7 +91,7 @@ You can set up custom keyboard shortcuts in your browser:
 
 ### File Structure
 ```
-eye-tracking-magnifier/
+VisionBridge/
 ├── manifest.json           # Extension configuration
 ├── content.js             # Main magnification logic
 ├── background.js          # Service worker
