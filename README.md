@@ -1,4 +1,4 @@
-# 👁️ Eye Tracking Text Magnifier Extension
+# 👁️ VisionBridge
 
 A highly optimized browser extension that magnifies text based on your eye movement or mouse position, making reading more comfortable and accessible.
 
